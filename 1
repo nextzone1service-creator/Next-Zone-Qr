@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Zone</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', 'Poppins', sans-serif;
+        }
+
+        /* ===== BACKGROUND: now on fixed pseudo-element with blur ===== */
+        html, body {
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-color: #050505;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Blurred background image layer */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: -40px; /* hide blur edges */
+            background-image: url('https://i.postimg.cc/WbKFwSSm/file-0000000097e08243b08f5f57dc0957bf.png');
+            background-size: cover;
+            background-position: center;
+            filter: blur(7px) brightness(0.55);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Light dark overlay for extra readability */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Top Contact Bar */
+        .top-contact {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .top-contact:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .top-contact i {
+            color: #25D366;
+            font-size: 18px;
+            animation: ring 2s infinite ease-in-out;
+        }
+
+        .top-contact a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes ring {
+            0% { transform: rotate(0); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-10deg); }
+            30% { transform: rotate(15deg); }
+            40% { transform: rotate(-10deg); }
+            50%, 100% { transform: rotate(0); }
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1), transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        #splash-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .splash-hide {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        /* Main Content */
+        #main-content {
+            width: 100%;
+            max-width: 480px;
+            padding: 80px 20px 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
+        }
+
+        .show-content {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        /* =============================================
+           ✦ PREMIUM NEON SQUIRCLE APP-ICON LOGO ✦
+           ============================================= */
+        .logo-squircle {
+            position: relative;
+            width: 165px;
+            height: 165px;
+            margin-bottom: 40px;
+            animation: squircleFloat 4s ease-in-out infinite;
+        }
+
+        .logo-squircle::after {
+            content: '';
+            position: absolute;
+            inset: -22px;
+            border-radius: 55px;
+            background: radial-gradient(circle at 50% 50%,
+                rgba(255, 92, 168, 0.6) 0%,
+                rgba(200, 80, 220, 0.35) 40%,
+                rgba(255, 140, 60, 0.15) 65%,
+                transparent 78%);
+            filter: blur(22px);
+            z-index: -1;
+            animation: neonGlowPulse 3s ease-in-out infinite;
+        }
+
+        .logo-squircle::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 36px;
+            background: conic-gradient(from 0deg,
+                #ff5ca8 0deg,
+                #ff9a3c 90deg,
+                #ff5ca8 180deg,
+                #a855f7 270deg,
+                #ff5ca8 360deg);
+            animation: spinNeon 4.5s linear infinite;
+            filter: blur(1.5px);
+            z-index: 0;
+        }
+
+        .logo-tile {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 33px;
+            background: #0a0a12;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow:
+                inset 0 0 30px rgba(0, 0, 0, 0.7),
+                0 18px 45px rgba(0, 0, 0, 0.55);
+        }
+
+        .logo-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .logo-tile::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.18) 0%,
+                transparent 30%,
+                transparent 75%,
+                rgba(0, 0, 0, 0.35) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .logo-tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.55),
+                transparent);
+            transform: skewX(-20deg);
+            animation: tileShine 4.5s ease-in-out infinite;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .sparkle {
+            position: absolute;
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1;
+            z-index: 6;
+            pointer-events: none;
+            text-shadow:
+                0 0 6px #ff5ca8,
+                0 0 14px #ff5ca8,
+                0 0 22px rgba(255, 92, 168, 0.7);
+            animation: sparkleTwinkle 2s ease-in-out infinite;
+        }
+
+        .sparkle-1 { top: -14px;  left: -14px;  animation-delay: 0s;   font-size: 20px; }
+        .sparkle-2 { top: -14px;  right: -14px; animation-delay: 0.5s; font-size: 24px; }
+        .sparkle-3 { bottom: -14px; left: -14px;  animation-delay: 1s;   font-size: 24px; }
+        .sparkle-4 { bottom: -14px; right: -14px; animation-delay: 1.5s; font-size: 20px; }
+
+        .logo-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffffff, #ff5ca8);
+            box-shadow:
+                0 0 8px #ff5ca8,
+                0 0 16px #ff5ca8,
+                0 0 24px rgba(255, 92, 168, 0.7);
+            z-index: 7;
+            animation: badgePulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50%      { transform: scale(1.25); opacity: 1; }
+        }
+
+        @keyframes spinNeon {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes tileShine {
+            0%, 55% { left: -120%; }
+            100%    { left: 160%; }
+        }
+
+        @keyframes neonGlowPulse {
+            0%, 100% { opacity: 0.55; transform: scale(0.92); }
+            50%      { opacity: 1;    transform: scale(1.08); }
+        }
+
+        @keyframes squircleFloat {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-9px); }
+        }
+
+        @keyframes sparkleTwinkle {
+            0%, 100% { opacity: 0.35; transform: scale(0.7) rotate(0deg); }
+            50%      { opacity: 1;    transform: scale(1.2) rotate(180deg); }
+        }
+
+        /* Greeting */
+        h1 {
+            color: #ffffff;
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            letter-spacing: 1px;
+        }
+
+        /* ===== NEW: Subtitle under greeting ===== */
+        .subtitle {
+            color: rgba(255, 255, 255, 0.82);
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 1.8px;
+            text-align: center;
+            margin-bottom: 32px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+            animation: fadeUp 1.2s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Buttons */
+        .btn-glass {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            padding: 16px 22px;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            opacity: 0;
+            animation: slideUpFade 0.6s ease forwards;
+        }
+
+        .btn-glass:nth-child(3) { animation-delay: 0.1s; }
+        .btn-glass:nth-child(4) { animation-delay: 0.2s; }
+        .btn-glass:nth-child(5) { animation-delay: 0.3s; }
+        .btn-glass:nth-child(6) { animation-delay: 0.4s; }
+        .btn-glass:nth-child(7) { animation-delay: 0.5s; }
+        .btn-glass:nth-child(8) { animation-delay: 0.6s; }
+        .btn-glass:nth-child(9) { animation-delay: 0.7s; }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-glass:hover, .btn-glass:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-glass i {
+            font-size: 24px;
+            margin-right: 18px;
+            width: 32px;
+            text-align: center;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .fa-facebook { color: #1877F2; }
+        .fa-whatsapp { color: #25D366; }
+        .fa-tiktok { color: #ffffff; }
+        .fa-location-dot { color: #ff4757; }
+        .fa-instagram { color: #E1306C; }
+        .fa-envelope { color: #f1c40f; }
+
+        /* Location Modal */
+        #location-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #location-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 35px 25px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #location-modal.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-content h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 26px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .modal-content p {
+            color: #e0e0e0;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease forwards;
+            opacity: 0;
+            font-weight: 600;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .top-contact { top: 10px; right: 10px; padding: 8px 15px; }
+            .top-contact a { font-size: 14px; }
+            .top-contact i { font-size: 16px; }
+            .btn-glass { font-size: 16px; padding: 14px 18px; }
+            .btn-glass i { font-size: 20px; margin-right: 12px; }
+            h1 { font-size: 28px; }
+            .subtitle { font-size: 13px; letter-spacing: 1.2px; }
+            .logo-squircle { width: 140px; height: 140px; }
+            .logo-tile { border-radius: 28px; }
+            .logo-squircle::before { border-radius: 31px; }
+            .sparkle { font-size: 16px; }
+            .sparkle-2, .sparkle-3 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Contact Bar -->
+    <div class="top-contact">
+        <i class="fas fa-phone-alt"></i>
+        <a href="tel:01863552986">01863552986</a>
+    </div>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <img src="https://i.postimg.cc/WbKFwSSm/file-0000000097e08243b08f5f57dc0957bf.png" alt="Next Zone Splash">
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        
+        <!-- ===== PREMIUM NEON SQUIRCLE LOGO ===== -->
+        <div class="logo-squircle">
+            <div class="logo-badge"></div>
+            <div class="sparkle sparkle-1">✦</div>
+            <div class="sparkle sparkle-2">✧</div>
+            <div class="sparkle sparkle-3">✧</div>
+            <div class="sparkle sparkle-4">✦</div>
+            <div class="logo-tile">
+                <img src="https://i.postimg.cc/wMYVbg67/Screenshot-2026-10-30-21-58-05-565-com-miui-gallery-1793376029246edit.jpg" alt="Next Zone Logo">
+            </div>
+        </div>
+
+        <h1>আসসালামু আলাইকুম</h1>
+
+        <!-- New subtitle -->
+        <p class="subtitle">Thanks For QR Code Scan 😊</p>
+
+        <!-- Buttons -->
+        <a href="https://www.facebook.com/share/1DQQLQniZv/" target="_blank" class="btn-glass">
+            <i class="fab fa-facebook"></i> ফেসবুক পেজ ভিজিট করুন
+        </a>
+
+        <a href="https://wa.me/8801863552986" target="_blank" class="btn-glass">
+            <i class="fab fa-whatsapp"></i> হোয়াটসঅ্যাপে মেসেজ করুন
+        </a>
+
+        <a href="https://www.tiktok.com/@next_zone3?_r=1&_t=ZS-9BaH7hwa4F3" target="_blank" class="btn-glass">
+            <i class="fab fa-tiktok"></i> টিকটক আইডি ভিজিট করুন
+        </a>
+
+        <div onclick="openLocation()" class="btn-glass">
+            <i class="fas fa-location-dot"></i> আমাদের শপের লোকেশন
+        </div>
+
+        <a href="https://instagram.com/next_zone3" target="_blank" class="btn-glass">
+            <i class="fab fa-instagram"></i> ইনস্টাগ্রাম আইডি ভিজিট করুন
+        </a>
+
+        <a href="mailto:nextzone1service@gmail.com" class="btn-glass">
+            <i class="fas fa-envelope"></i> ইমেইল করুন
+        </a>
+    </div>
+
+    <!-- Location Modal -->
+    <div id="location-modal">
+        <div class="modal-content">
+            <h2>📍 শপের লোকেশন</h2>
+            <p>
+                মার্কেটের নাম: আলহাস কাশেম কমপ্লেক্স<br><br>
+                হাসপাতাল রোড, ফায়ার সার্ভিস অফিসের বিপরীতে,<br>
+                পাতারহাট বন্দর  মেহেন্দিগঞ্জ, বরিশাল।<br><br>
+                <b>নিচতলায়, দোকান নং: ১২ (Next Zone)</b><br><br>
+                <small>ফায়ার সার্ভিসের কাছে এসে জিজ্ঞাসা করলেই দেখিয়ে দেবে।</small>
+            </p>
+            <button class="close-btn" onclick="closeLocation()">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const mainContent = document.getElementById('main-content');
+                splash.classList.add('splash-hide');
+                mainContent.classList.add('show-content');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 800);
+            }, 2500);
+        });
+
+        function openLocation() {
+            document.getElementById('location-modal').classList.add('active');
+        }
+
+        function closeLocation() {
+            document.getElementById('location-modal').classList.remove('active');
+        }
+
+        document.getElementById('location-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLocation();
+            }
+        });
+    </script>
+</body>
+</html>
